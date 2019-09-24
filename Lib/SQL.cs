@@ -47,26 +47,17 @@ namespace SSD.Lib
             using (SQLiteCommand command = new SQLiteCommand(whereQuery, this._connection))
             {
                 SQLiteDataReader reader = command.ExecuteReader();
-                Debug.Info("SQL.cs", 50, "read");
 
                 PropertyInfo[] p = typeof(T).GetProperties();
-                Debug.Info("SQL.cs", 53, "has properties");
 
                 T t = (T)Activator.CreateInstance(typeof(T));
-                Debug.Info("SQL.cs", 56, "created instance");
 
                 if (reader.HasRows)
                 {
-                    Debug.Info("SQL.cs", 60, "has rows");
-
                     while (reader.Read())
                     {
-                        Debug.Info("SQL.cs", 64, "in while");
-
                         foreach (PropertyInfo prop in p)
                         {
-                            Debug.Info("SQL.cs", 58, prop.Name);
-
                             if (prop.PropertyType.IsSubclassOf(typeof(IModel)))
                             {
                                 string propName = prop.Name + "Id";
@@ -74,7 +65,6 @@ namespace SSD.Lib
 
                                 if (value == null || value.ToString() == "")
                                 {
-                                    Debug.Info("SQL.cs", 67, "isEmpty");
                                     continue;
                                 }
 
@@ -125,14 +115,11 @@ namespace SSD.Lib
             {
                 throw new Exception("Id not in model");
             }
-            Debug.Info("SQL.cs", 111, "Got past idProp");
             idProp.SetValue(model, id);
 
             string upperCase = this._GetTableStringFromModel(model.GetType().Name);
-            Debug.Info("SQL.cs", 115, "table is uppercased");
 
             sql += $"INSERT INTO {upperCase} (";
-            Debug.Info("SQL.cs", 118, sql);
 
             foreach (PropertyInfo p in props)
             {
@@ -150,8 +137,6 @@ namespace SSD.Lib
             sql += $") VALUES (";
             foreach (PropertyInfo p in props)
             {
-                Debug.Info("SQL.cs", 122, p.Name);
-
                 object val = p.GetValue(model);
 
                 if (p.PropertyType.IsSubclassOf(typeof(IModel)))

@@ -26,9 +26,7 @@ namespace SSD.Controllers
                     Person p = null;
                     if (l.Role == Roles.Admin)
                     {
-                        Debug.Info("LoginController.cs", 29, "Pre");
                         BankAdmin temp = Person.SelectById<BankAdmin>(l.UserId);
-                        Debug.Info("LoginController.cs", 31, "Post");
                         p = temp;
                     }
                     else

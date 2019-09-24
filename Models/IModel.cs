@@ -34,7 +34,6 @@ namespace SSD.Models
         {
             try
             {
-                Debug.Info("IModel.cs", 37, "Pre in model");
                 T[] returnObj = SQL.GetInstance().Select<T>("Id = \"" + Id + "\";");
 
                 if (returnObj.Length > 0)
