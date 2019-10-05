@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System;
 using SSD.Models;
+using SSD.Lib;
 
 namespace SSD.Pages
 {
@@ -26,10 +27,11 @@ namespace SSD.Pages
         {
             List<string> options = new List<string>();
             int response = 0;
+            string header = "";
 
             if (role == Roles.Admin)
             {
-                Console.WriteLine($"Hello {this.person.FirstName} {this.person.LastName}. Your Branch Location is {(person as BankAdmin).BranchLocation}");
+                header = "Hello {this.person.FirstName} {this.person.LastName}. Your Branch Location is {(person as BankAdmin).BranchLocation}";
 
                 options.Add("Make Transaction");
                 options.Add("View Transactions");
@@ -39,7 +41,7 @@ namespace SSD.Pages
             }
             else if (role == Roles.User)
             {
-                Console.WriteLine($"Hello {person.FirstName} {person.LastName}. Your account type is {(person as BankUser).AccountType}");
+                header = $"Hello {person.FirstName} {person.LastName}. Your account type is {(person as BankUser).AccountType}";
 
                 options.Add("Make Transaction");
                 options.Add("View Transactions");
@@ -47,21 +49,42 @@ namespace SSD.Pages
             }
 
             Menu m = new Menu(options.ToArray());
-            response = m.RenderMenu();
+            bool goodResponse = false;
 
-            switch (response)
+
+            do
             {
-                case -1:
-                case 5:
-                    this._router.Navigate(Routes.Splash);
-                    break;
-                case 3:
-                    if (role == Roles.User)
-                    {
+                response = m.RenderMenu(header);
+                switch (response)
+                {
+                    case -1:
+                    case 5:
                         this._router.Navigate(Routes.Splash);
-                    }
-                    break;
-            }
+                        goodResponse = true;
+                        break;
+                    case 1:
+                        this._router.Navigate(Routes.MakeTransaction, this.person);
+                        goodResponse = true;
+                        break;
+                    case 3:
+                        if (role == Roles.User)
+                        {
+                            this._router.Navigate(Routes.Splash);
+                            goodResponse = true;
+                        }
+                        else
+                        {
+
+                        }
+                        break;
+                    default:
+                        Console.WriteLine("Bad choice! Try again...");
+                        Console.ReadKey();
+                        Console.Clear();
+                        goodResponse = false;
+                        break;
+                }
+            } while (!goodResponse);
         }
     }
 }

@@ -1,5 +1,3 @@
-using SSD.Lib;
-
 namespace SSD.Models
 {
     public class Transactions : IModel

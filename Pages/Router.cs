@@ -11,6 +11,8 @@ namespace SSD.Pages
         Error error;
         Dashboard dashboard;
 
+        MakeTransaction makeTransaction;
+
         public Router()
         {
             splash = new Splash(this);
@@ -18,6 +20,7 @@ namespace SSD.Pages
             register = new Register(this);
             error = new Error(this);
             dashboard = new Dashboard(this);
+            makeTransaction = new MakeTransaction(this);
         }
 
         public void Navigate(Routes chosenRoute)
@@ -37,6 +40,8 @@ namespace SSD.Pages
                     break;
                 case Routes.Dashboard:
                     throw new Exception("This route requires a model to be passed in...");
+                case Routes.MakeTransaction:
+                    throw new Exception("This route requires a model to be passed in...");
                 default:
                     route = error;
                     break;
@@ -55,6 +60,10 @@ namespace SSD.Pages
                     dashboard.AddModel(model as Person);
                     route = dashboard;
                     break;
+                case Routes.MakeTransaction:
+                    makeTransaction.AddModel(model as Person);
+                    route = makeTransaction;
+                    break;
                 default:
                     route = error;
                     break;
@@ -66,6 +75,6 @@ namespace SSD.Pages
 
     public enum Routes
     {
-        Splash, Login, Register, Error, Dashboard
+        Splash, Login, Register, Error, Dashboard, MakeTransaction, ViewTransaction, UpdateTransaction, DeleteTransaction
     }
 }

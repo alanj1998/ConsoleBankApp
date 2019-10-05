@@ -2,17 +2,18 @@ using SSD.Lib;
 
 namespace SSD.Controllers
 {
-    public class AppController
+    public class AppController : IController
     {
         private static AppController _controller;
         private static SQL _sql;
 
         public LoginController LoginController { get; set; }
+        public UserController UserController { get; set; }
 
-        public AppController(SQL sqlLib)
+        public AppController(SQL sqlLib) : base(sqlLib)
         {
-            _sql = sqlLib;
             this.LoginController = new LoginController(_sql);
+            this.UserController = new UserController(_sql);
         }
         public static AppController GetInstance()
         {

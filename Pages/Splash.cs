@@ -27,8 +27,7 @@ namespace SSD.Pages
                     break;
                 case -1:
                     Console.WriteLine("\nThank you for using the app!");
-                    System.Console.WriteLine("Press any key to continue...");
-                    Console.ReadLine();
+                    Console.WriteLine("Press any key to continue...");
                     break;
                 default:
                     throw new Exception("Should not be here! Check Menu code!");

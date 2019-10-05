@@ -1,4 +1,5 @@
 using System;
+using SSD.Lib;
 
 namespace SSD.Pages
 {
@@ -11,7 +12,7 @@ namespace SSD.Pages
             this.options = options;
         }
 
-        public int RenderMenu()
+        public int RenderMenu(string header = "")
         {
             bool isDone = false;
             int response = 0;
@@ -19,6 +20,10 @@ namespace SSD.Pages
 
             do
             {
+                if (header != "")
+                {
+                    Console.WriteLine(header);
+                }
                 for (int i = 0; i < options.Length; i++)
                 {
                     Console.WriteLine($"{i + 1}) {options[i]}");
@@ -41,7 +46,7 @@ namespace SSD.Pages
                         Console.WriteLine("You have chosen a bad menu option. Try again!");
                         isDone = false;
                         Console.Read();
-                        Console.Clear();
+                        ConsoleExtensions.ClearLines(1 + options.Length);
                     }
                 }
             }
