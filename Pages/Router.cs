@@ -10,8 +10,10 @@ namespace SSD.Pages
         Register register;
         Error error;
         Dashboard dashboard;
-
         MakeTransaction makeTransaction;
+        ViewTransactions viewTransactions;
+        UpdateTransactions updateTransactions;
+        DeleteTransaction deleteTransaction;
 
         public Router()
         {
@@ -21,6 +23,9 @@ namespace SSD.Pages
             error = new Error(this);
             dashboard = new Dashboard(this);
             makeTransaction = new MakeTransaction(this);
+            viewTransactions = new ViewTransactions(this);
+            updateTransactions = new UpdateTransactions(this);
+            deleteTransaction = new DeleteTransaction(this);
         }
 
         public void Navigate(Routes chosenRoute)
@@ -41,6 +46,12 @@ namespace SSD.Pages
                 case Routes.Dashboard:
                     throw new Exception("This route requires a model to be passed in...");
                 case Routes.MakeTransaction:
+                    throw new Exception("This route requires a model to be passed in...");
+                case Routes.ViewTransaction:
+                    throw new Exception("This route requires a model to be passed in...");
+                case Routes.UpdateTransaction:
+                    throw new Exception("This route requires a model to be passed in...");
+                case Routes.DeleteTransaction:
                     throw new Exception("This route requires a model to be passed in...");
                 default:
                     route = error;
@@ -63,6 +74,18 @@ namespace SSD.Pages
                 case Routes.MakeTransaction:
                     makeTransaction.AddModel(model as Person);
                     route = makeTransaction;
+                    break;
+                case Routes.ViewTransaction:
+                    viewTransactions.AddModel(model as Person);
+                    route = viewTransactions;
+                    break;
+                case Routes.UpdateTransaction:
+                    updateTransactions.AddModel(model as Person);
+                    route = updateTransactions;
+                    break;
+                case Routes.DeleteTransaction:
+                    deleteTransaction.AddModel(model as Person);
+                    route = deleteTransaction;
                     break;
                 default:
                     route = error;

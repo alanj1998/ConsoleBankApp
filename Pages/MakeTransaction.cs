@@ -73,6 +73,7 @@ namespace SSD.Pages
             transaction.LargeCurrencyString = c.CurrencyLongName;
 
             transaction.Amount = GetAmount(c.CurrencyShortName);
+            transaction.Timestamp = ((DateTimeOffset)DateTime.Now).ToUnixTimeMilliseconds();
 
             Transactions.InsertNewObject(transaction);
 
@@ -153,7 +154,7 @@ namespace SSD.Pages
                         else if (nameInput.ToLower() == "n")
                         {
                             rightAnswer = true;
-                            _router.Navigate(Routes.Dashboard);
+                            _router.Navigate(Routes.Dashboard, this._user);
                         }
                         else
                         {
@@ -177,7 +178,7 @@ namespace SSD.Pages
                         Console.Write("\nSelect your user: ");
                         if (int.TryParse(Console.ReadLine(), out chosenUser))
                         {
-                            if (chosenUser - 1 < 0 || chosenUser - 1 > users.Length)
+                            if (chosenUser - 1 < 0 || chosenUser - 1 >= users.Length)
                             {
                                 Console.WriteLine("Bad answer! Try again! ");
                                 Console.ReadKey();

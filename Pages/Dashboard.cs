@@ -31,7 +31,7 @@ namespace SSD.Pages
 
             if (role == Roles.Admin)
             {
-                header = "Hello {this.person.FirstName} {this.person.LastName}. Your Branch Location is {(person as BankAdmin).BranchLocation}";
+                header = $"Hello {this.person.FirstName} {this.person.LastName}. Your Branch Location is {(person as BankAdmin).BranchLocation}";
 
                 options.Add("Make Transaction");
                 options.Add("View Transactions");
@@ -51,7 +51,6 @@ namespace SSD.Pages
             Menu m = new Menu(options.ToArray());
             bool goodResponse = false;
 
-
             do
             {
                 response = m.RenderMenu(header);
@@ -66,15 +65,34 @@ namespace SSD.Pages
                         this._router.Navigate(Routes.MakeTransaction, this.person);
                         goodResponse = true;
                         break;
+                    case 2:
+                        this._router.Navigate(Routes.ViewTransaction, this.person);
+                        goodResponse = true;
+                        break;
                     case 3:
                         if (role == Roles.User)
                         {
                             this._router.Navigate(Routes.Splash);
                             goodResponse = true;
                         }
-                        else
+                        else if (role == Roles.Admin)
                         {
-
+                            this._router.Navigate(Routes.UpdateTransaction, this.person);
+                            goodResponse = true;
+                        }
+                        break;
+                    case 4:
+                        if (role == Roles.User)
+                        {
+                            Console.WriteLine("Bad choice! Try again...");
+                            Console.ReadKey();
+                            Console.Clear();
+                            goodResponse = false;
+                        }
+                        else if (role == Roles.Admin)
+                        {
+                            this._router.Navigate(Routes.DeleteTransaction, this.person);
+                            goodResponse = true;
                         }
                         break;
                     default:

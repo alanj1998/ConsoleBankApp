@@ -43,7 +43,6 @@ namespace SSD.Lib
         {
             List<T> returnValue = new List<T>();
             whereQuery = $"SELECT * FROM {this._GetTableStringFromModel(typeof(T).Name)} WHERE {whereQuery}";
-
             using (SQLiteCommand command = new SQLiteCommand(whereQuery, this._connection))
             {
                 SQLiteDataReader reader = command.ExecuteReader();
@@ -71,7 +70,7 @@ namespace SSD.Lib
                                 Type type = this.GetType();
 
                                 string sql = "SELECT * FROM " + this._GetTableStringFromModel(prop.PropertyType.Name) + " WHERE Id = \"" + value + "\";";
-                                object res = type.GetMethod("Select").MakeGenericMethod(prop.PropertyType).Invoke(this, new object[] { sql });
+                                object res = type.GetMethod("Select").MakeGenericMethod(prop.PropertyType).Invoke(this, new object[] { "Id = \"" + value + "\";" });
 
                                 if (prop.PropertyType.IsArray)
                                 {
@@ -93,11 +92,29 @@ namespace SSD.Lib
                             }
                             else
                             {
-                                prop.SetValue(t, reader[prop.Name]);
+                                object value = null;
+                                try
+                                {
+                                    value = reader[prop.Name];
+
+                                }
+                                catch (System.Exception)
+                                {
+                                    continue;
+                                    throw;
+                                }
+
+                                if (value == null)
+                                {
+                                    continue;
+                                }
+                                else
+                                {
+                                    prop.SetValue(t, reader[prop.Name]);
+                                }
                             }
                         }
                     }
-
                     returnValue.Add(t);
                 }
             }
@@ -161,9 +178,6 @@ namespace SSD.Lib
             }
             sql = sql.Remove(sql.Length - 1);
             sql += ");";
-
-            Console.WriteLine(sql);
-
             using (SQLiteCommand command = new SQLiteCommand(sql, this._connection))
             {
                 command.ExecuteNonQuery();
@@ -186,7 +200,7 @@ namespace SSD.Lib
 
             foreach (PropertyInfo p in props)
             {
-                if (p.Name != "Id")
+                if (p.Name != "Id" && !p.PropertyType.IsSubclassOf(typeof(IModel)))
                 {
                     object val = p.GetValue(updatedModel);
 
@@ -201,9 +215,7 @@ namespace SSD.Lib
                 }
             }
             sql = sql.Remove(sql.Length - 2);
-            sql += ' ' + whereClause;
-
-            Console.WriteLine(sql);
+            sql += " WHERE " + whereClause;
 
             using (SQLiteCommand command = new SQLiteCommand(sql, this._connection))
             {
@@ -213,7 +225,7 @@ namespace SSD.Lib
 
         public void Delete<T>(string whereClause)
         {
-            string sql = $"DELETE FROM {this._GetTableStringFromModel(Activator.CreateInstance<T>().GetType().Name)} " + whereClause;
+            string sql = $"DELETE FROM {this._GetTableStringFromModel(Activator.CreateInstance<T>().GetType().Name)} WHERE " + whereClause;
             using (SQLiteCommand command = new SQLiteCommand(sql, this._connection))
             {
                 command.ExecuteNonQuery();
