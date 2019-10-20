@@ -99,7 +99,7 @@ namespace SSD.Pages
             bool rightAnswer = false;
             decimal amount = 0;
 
-            Console.Write($"Sender ({t.SenderAccount.FirstName} {t.SenderAccount.LastName}): ");
+            Console.Write($"Sender ({((t.SenderAccount != null) ? t.SenderAccount.FirstName + " " + t.SenderAccount.LastName : "")}): ");
             input = Console.ReadLine();
             if (input != "")
             {
@@ -109,7 +109,7 @@ namespace SSD.Pages
                 input = "";
             }
 
-            Console.Write($"Receiver ({t.ReceiverAccount.FirstName} {t.ReceiverAccount.LastName}): ");
+            Console.Write($"Receiver ({((t.SenderAccount != null) ? t.SenderAccount.FirstName + " " + t.SenderAccount.LastName : "")}): ");
             input = Console.ReadLine();
             if (input != "")
             {
