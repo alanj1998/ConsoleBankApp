@@ -29,7 +29,7 @@ namespace SSD.Pages
             Transactions[] transactions = GetTransactions(u.Id);
 
             Console.WriteLine($"Transactions for {u.FirstName} {u.LastName}");
-            RenderTable(transactions);
+            TableHelpers.RenderTable(transactions);
 
             do
             {
@@ -65,29 +65,6 @@ namespace SSD.Pages
         public Transactions[] GetTransactions(string userId)
         {
             return AppController.GetInstance().TransactionController.GetTransactionsForUser(userId);
-        }
-
-        public void RenderTable(Transactions[] transactions)
-        {
-            AddLine();
-            AddRow("", "Date", "Sender", "Receiver", "Currency", "Amount");
-            AddLine();
-            for (int i = 0; i < transactions.Length; i++)
-            {
-                Transactions t = transactions[i];
-                AddRow($"{i + 1}.", new DateTime(t.Timestamp).ToString("dd/MM/yyyy hh:mm tt"), $"{t.SenderAccount.FirstName} {t.SenderAccount.LastName}", $"{t.ReceiverAccount.FirstName} {t.ReceiverAccount.LastName}", $"{t.SmallCurrencyString}", $"{t.Amount}");
-                AddLine();
-            }
-        }
-
-        private void AddLine()
-        {
-            Console.WriteLine("".PadLeft(98, '-'));
-        }
-
-        private void AddRow(string val1, string val2, string val3, string val4, string val5, string val6)
-        {
-            Console.WriteLine("|{0,-3}|{1,-20}|{2,-25}|{3,-25}|{4,-8}|{5,-10}|", val1, val2, val3, val4, val5, val6);
         }
 
         public BankUser SearchForUsers(string name = "")

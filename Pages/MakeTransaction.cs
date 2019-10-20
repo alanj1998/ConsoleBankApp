@@ -57,16 +57,42 @@ namespace SSD.Pages
 
         public override void Render()
         {
-            Transactions transaction = new Transactions()
-            {
-                SenderAccountId = _user.Id
-            };
+            Transactions transaction = new Transactions();
+            BankUser sender = null;
+            BankUser receiver;
 
-            Console.WriteLine("You are about to make a transaction from your account.");
-            Console.WriteLine("First search for a person to transfer funds to:");
+            bool adminUserCheck = false;
 
-            BankUser b = SearchForUsers();
-            transaction.ReceiverAccountId = b.Id;
+            if(_user.Role == Roles.Admin) {
+                Console.WriteLine("You are about to make a transation as an Admin.");
+                Console.WriteLine("Search for a person to transfer funds from: ");
+                sender = SearchForUsers();
+                transaction.SenderAccountId = sender.Id;
+            }
+            else {
+                Console.WriteLine("You are about to make a transaction from your account.");
+                transaction.SenderAccountId = _user.Id;
+            }
+            
+            do {
+                Console.WriteLine("Search for a person to transfer funds to:");
+
+                receiver = SearchForUsers();
+                transaction.ReceiverAccountId = receiver.Id;
+
+                if(_user.Role == Roles.Admin) {
+                    if(sender.Id == receiver.Id) {
+                        Console.WriteLine("You cannot make a transaction to yourself!");
+                        Console.WriteLine("Press any key to try again...");
+                        Console.ReadKey();
+                        ConsoleExtensions.ClearLines(3);
+                    }
+                    else adminUserCheck = true;
+                }
+                else {
+                    adminUserCheck = true;
+                }
+            } while(!adminUserCheck);
 
             Currency c = GetCurrency();
             transaction.SmallCurrencyString = c.CurrencyShortName;
@@ -135,7 +161,7 @@ namespace SSD.Pages
             BankUser[] users = null;
             do
             {
-                Console.Write("Enter name:");
+                Console.Write("Enter name: ");
                 nameInput = Console.ReadLine();
                 users = BankUser.GetBankUsersByName(nameInput);
 

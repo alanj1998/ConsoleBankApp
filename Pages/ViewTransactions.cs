@@ -24,7 +24,7 @@ namespace SSD.Pages
                 Console.WriteLine($"Transactions for {user.FirstName} {user.LastName}");
                 if (t.Length > 0)
                 {
-                    RenderTable(t);
+                    TableHelpers.RenderTable(t);
                 }
                 else
                 {
@@ -45,7 +45,7 @@ namespace SSD.Pages
                     Console.Write("Enter the name of a user to search for: ");
                     name = Console.ReadLine();
 
-                    users = BankUser.GetBankUsersByName(name);
+                    users = AppController.GetInstance().UserController.GetBankUsersByName(name);
 
                     if (users.Length < 1)
                     {
@@ -90,7 +90,7 @@ namespace SSD.Pages
                                 {
                                     Console.WriteLine("Bad answer! Try again! ");
                                     Console.ReadKey();
-                                    ConsoleExtensions.ClearLines(users.Length + 3);
+                                    ConsoleExtensions.ClearLines(users.Length + 4);
                                 }
                                 else
                                 {
@@ -115,7 +115,7 @@ namespace SSD.Pages
                 Console.WriteLine($"Transactions for {user.FirstName} {user.LastName}");
                 if (t.Length > 0)
                 {
-                    RenderTable(t);
+                    TableHelpers.RenderTable(t);
                 }
                 else
                 {
@@ -125,29 +125,6 @@ namespace SSD.Pages
             Console.WriteLine("Press any key to continue...");
             Console.ReadKey();
             this._router.Navigate(Routes.Dashboard, this.user);
-        }
-
-        public void RenderTable(Transactions[] transactions)
-        {
-            AddLine();
-            AddRow("", "Date", "Sender", "Receiver", "Currency", "Amount");
-            AddLine();
-            for (int i = 0; i < transactions.Length; i++)
-            {
-                Transactions t = transactions[i];
-                AddRow($"{i + 1}.", new DateTime(t.Timestamp).ToString("dd/MM/yyyy hh:mm tt"), $"{t.SenderAccount.FirstName} {t.SenderAccount.LastName}", $"{t.ReceiverAccount.FirstName} {t.ReceiverAccount.LastName}", $"{t.SmallCurrencyString}", $"{t.Amount}");
-                AddLine();
-            }
-        }
-
-        private void AddLine()
-        {
-            Console.WriteLine("".PadLeft(98, '-'));
-        }
-
-        private void AddRow(string val1, string val2, string val3, string val4, string val5, string val6)
-        {
-            Console.WriteLine("|{0,-3}|{1,-20}|{2,-25}|{3,-25}|{4,-8}|{5,-10}|", val1, val2, val3, val4, val5, val6);
         }
     }
 }

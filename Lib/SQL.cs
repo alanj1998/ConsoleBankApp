@@ -49,12 +49,12 @@ namespace SSD.Lib
 
                 PropertyInfo[] p = typeof(T).GetProperties();
 
-                T t = (T)Activator.CreateInstance(typeof(T));
-
                 if (reader.HasRows)
                 {
                     while (reader.Read())
                     {
+                        T t = (T)Activator.CreateInstance(typeof(T));
+
                         foreach (PropertyInfo prop in p)
                         {
                             if (prop.PropertyType.IsSubclassOf(typeof(IModel)))
@@ -114,8 +114,8 @@ namespace SSD.Lib
                                 }
                             }
                         }
+                        if( t != null) returnValue.Add(t);
                     }
-                    returnValue.Add(t);
                 }
             }
             return returnValue.ToArray();
