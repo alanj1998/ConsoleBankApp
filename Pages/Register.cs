@@ -62,40 +62,6 @@ namespace SSD.Pages
                     PhoneNumber = phoneNumber
                 };
 
-                do
-                {
-                    Console.Write("Type in the first name and second name of your manager: ");
-                    managerName = Console.ReadLine();
-
-                    try
-                    {
-                        p = Person.GetPersonByName(managerName);
-                    }
-                    catch (System.Exception)
-                    {
-                        p = null;
-                    }
-
-                    if (p == null)
-                    {
-                        Console.Write("Manager not found. Try again? (yes/no): ");
-                        string answer = Console.ReadLine();
-
-                        switch (answer.ToLower())
-                        {
-                            case "n":
-                            case "no":
-                                hasManager = true;
-                                break;
-                            default:
-                                hasManager = false;
-
-                                ConsoleExtensions.ClearLines(2);
-                                break;
-                        }
-                    }
-                } while (!hasManager);
-
                 Console.Write("Enter your branch location: ");
                 admin.BranchLocation = Console.ReadLine();
                  
