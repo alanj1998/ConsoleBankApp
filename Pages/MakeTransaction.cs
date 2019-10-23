@@ -67,6 +67,9 @@ namespace SSD.Pages
                 Console.WriteLine("You are about to make a transation as an Admin.");
                 Console.WriteLine("Search for a person to transfer funds from: ");
                 sender = SearchForUsers();
+                if(sender == null) {
+                    return;
+                }
                 transaction.SenderAccountId = sender.Id;
             }
             else {
@@ -78,6 +81,9 @@ namespace SSD.Pages
                 Console.WriteLine("Search for a person to transfer funds to:");
 
                 receiver = SearchForUsers();
+                if(receiver == null) {
+                    return;
+                }
                 transaction.ReceiverAccountId = receiver.Id;
 
                 if(_user.Role == Roles.Admin) {
@@ -181,6 +187,7 @@ namespace SSD.Pages
                         {
                             rightAnswer = true;
                             _router.Navigate(Routes.Dashboard, this._user);
+                            return null;
                         }
                         else
                         {

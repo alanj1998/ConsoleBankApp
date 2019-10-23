@@ -63,6 +63,7 @@ namespace SSD.Pages
                             {
                                 rightAnswer = true;
                                 _router.Navigate(Routes.Dashboard, this.user);
+                                return;
                             }
                             else
                             {

@@ -96,29 +96,9 @@ namespace SSD.Pages
                     }
                 } while (!hasManager);
 
-
-                if (p != null)
-                {
-                    string managersBranchLocation = admin.Manager.BranchLocation;
-
-                    admin.Manager = p as BankAdmin;
-                    admin.ManagerId = p.Id;
-
-                    if (managersBranchLocation == "")
-                    {
-                        Console.Write("Enter your branch location: ");
-                        admin.BranchLocation = Console.ReadLine();
-                    }
-                }
-                else
-                {
-                    admin.Manager = null;
-                    admin.ManagerId = "";
-
-                    Console.Write("Enter your branch location: ");
-                    admin.BranchLocation = Console.ReadLine();
-                }
-
+                Console.Write("Enter your branch location: ");
+                admin.BranchLocation = Console.ReadLine();
+                 
                 try
                 {
                     p = BankAdmin.InsertNewObject<BankAdmin>(admin);
