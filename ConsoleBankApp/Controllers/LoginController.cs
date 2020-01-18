@@ -30,10 +30,14 @@ namespace SSD.Controllers
             if (l == null)
             {
                 password.Dispose();
+                l = null;
+                GC.Collect();
                 return null; // no user
             }
             else if(!VerifyPasswordHash(password, l.Password, l.Salt))
             {
+                l = null;
+                GC.Collect();
                 return null; // password did not match
             }
             else
@@ -44,6 +48,7 @@ namespace SSD.Controllers
                     Person p = null;
                     if (l.Role == Roles.Admin)
                     {
+                        l = null;
                         BankAdmin temp = Person.SelectById<BankAdmin>(l.UserId);
                         if(temp.Id != l.UserId)
                         {
@@ -57,11 +62,16 @@ namespace SSD.Controllers
                         BankUser temp = Person.SelectById<BankUser>(l.UserId);
                         if (temp.Id != l.UserId)
                         {
+                            l = null;
+                            GC.Collect();
                             return null; // data integrity failed
                         }
+                        l = null;
+                        GC.Collect();
 
                         p = temp;
                     }
+                    LogEntry.SetActor($"{p.FirstName} {p.LastName}", p.Role);
 
                     return p;
                 }
@@ -89,10 +99,14 @@ namespace SSD.Controllers
             try
             {
                 LoginDetails.InsertNewObject(l);
+                l = null;
+                GC.Collect();
                 return true;
             }
             catch (Exception e)
             {
+                l = null;
+                GC.Collect();
                 Console.WriteLine(e.Message);
                 return false;
             } 

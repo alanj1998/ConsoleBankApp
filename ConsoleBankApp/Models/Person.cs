@@ -1,3 +1,5 @@
+using System;
+using SSD.Controllers;
 using SSD.Lib;
 
 namespace SSD.Models
@@ -15,22 +17,28 @@ namespace SSD.Models
 
         internal static Person GetPersonByName(string nameString)
         {
+            LogEntry l = new LogEntry("Getting " + nameString + " user by name", DateTime.Now);   
             string[] splitName = nameString.Split(' ');
-
             Person[] p = SQL.GetInstance().Select<Person>($"FirstName = \"{splitName[0]}\" AND LastName = \"{splitName[1]}\";");
 
             if (p.Length > 0)
             {
                 if(p[0].FirstName == splitName[0] && p[0].LastName == splitName[1])
                 {
+                    l.AddEndTime(DateTime.Now);
+                    LoggerController.AddToLog(l.ToString());
                     return p[0];
                 } else
                 {
+                    l.AddEndTime(DateTime.Now);
+                    LoggerController.AddToLog(l.ToString());
                     return null;
                 }
             }
             else
             {
+                l.AddEndTime(DateTime.Now);
+                LoggerController.AddToLog(l.ToString());
                 return null;
             }
         }
@@ -38,6 +46,6 @@ namespace SSD.Models
 
     internal enum Roles
     {
-        Admin = 1, User = 2
+        Admin = 1, User = 2, Unauthorized
     }
 }

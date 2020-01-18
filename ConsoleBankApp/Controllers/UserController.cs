@@ -12,7 +12,7 @@ namespace SSD.Controllers
         internal BankUser[] GetBankUsersByName(string Name)
         {
             BankUser[] users = BankUser.GetBankUsersByName(Name);
-
+            
             return users;
         }
     }
