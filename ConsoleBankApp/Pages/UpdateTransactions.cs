@@ -90,6 +90,7 @@ namespace SSD.Pages
             UpdateChosenTransaction(chosenTransaction);
             Console.WriteLine("Press any key to continue...");
             Console.ReadKey();
+        
             this._router.Navigate(Routes.Dashboard, this.user);
         }
 

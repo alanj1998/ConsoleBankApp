@@ -8,6 +8,7 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <UserSecretsId>aac238c5-efc3-4060-947f-208806e8404a</UserSecretsId>
+    <SignAssembly>true</SignAssembly>
   </PropertyGroup>
 
   <ItemGroup>

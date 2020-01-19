@@ -37,6 +37,7 @@ namespace SSD.Controllers
             else if(!VerifyPasswordHash(password, l.Password, l.Salt))
             {
                 l = null;
+                password.Dispose();
                 GC.Collect();
                 return null; // password did not match
             }
@@ -48,13 +49,14 @@ namespace SSD.Controllers
                     Person p = null;
                     if (l.Role == Roles.Admin)
                     {
-                        l = null;
                         BankAdmin temp = Person.SelectById<BankAdmin>(l.UserId);
                         if(temp.Id != l.UserId)
                         {
+                            l = null;
                             return null; // data integrity failed
                         }
 
+                        l = null;
                         p = temp;
                     }
                     else
@@ -95,6 +97,7 @@ namespace SSD.Controllers
                 Role = p.Role,
                 UserId = p.Id
             };
+            password.Dispose();
 
             try
             {

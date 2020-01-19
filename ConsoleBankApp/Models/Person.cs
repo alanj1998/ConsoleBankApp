@@ -46,6 +46,6 @@ namespace SSD.Models
 
     internal enum Roles
     {
-        Admin = 1, User = 2, Unauthorized
+        Admin = 1, User = 2, Unauthenticated
     }
 }

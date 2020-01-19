@@ -14,6 +14,7 @@ namespace SSD.Pages
         ViewTransactions viewTransactions;
         UpdateTransactions updateTransactions;
         DeleteTransaction deleteTransaction;
+        ViewLogs viewLogs;
 
         internal Router()
         {
@@ -26,6 +27,7 @@ namespace SSD.Pages
             viewTransactions = new ViewTransactions(this);
             updateTransactions = new UpdateTransactions(this);
             deleteTransaction = new DeleteTransaction(this);
+            viewLogs = new ViewLogs(this);
         }
 
         internal void Navigate(Routes chosenRoute)
@@ -52,6 +54,8 @@ namespace SSD.Pages
                 case Routes.UpdateTransaction:
                     throw new Exception("This route requires a model to be passed in...");
                 case Routes.DeleteTransaction:
+                    throw new Exception("This route requires a model to be passed in...");
+                case Routes.ViewLogs:
                     throw new Exception("This route requires a model to be passed in...");
                 default:
                     route = error;
@@ -87,6 +91,10 @@ namespace SSD.Pages
                     deleteTransaction.AddModel(model as Person);
                     route = deleteTransaction;
                     break;
+                case Routes.ViewLogs:
+                    viewLogs.AddModel(model as Person);
+                    route = viewLogs;
+                    break;
                 default:
                     route = error;
                     break;
@@ -97,6 +105,6 @@ namespace SSD.Pages
     }
 
     internal enum Routes    {
-        Splash, Login, Register, Error, Dashboard, MakeTransaction, ViewTransaction, UpdateTransaction, DeleteTransaction
+        Splash, Login, Register, Error, Dashboard, MakeTransaction, ViewTransaction, UpdateTransaction, DeleteTransaction, ViewLogs
     }
 }

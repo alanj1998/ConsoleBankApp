@@ -14,6 +14,7 @@ namespace SSD
             Router _router = new Router();
             SQL sql = new SQL();
             new AppController(sql);
+            new LoggerController(sql);
 
             _router.Navigate(Routes.Splash);
         }

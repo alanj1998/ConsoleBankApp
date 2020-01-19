@@ -1,5 +1,8 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security;
+using System.Text.RegularExpressions;
 using SSD.Controllers;
 using SSD.Lib;
 using SSD.Models;
@@ -11,7 +14,7 @@ namespace SSD.Pages
         internal Register(Router r) : base(r) { }
         internal override void Render()
         {
-            string role = "", firstName, secondName, address1, address2, address3, phoneNumber, accountType;
+            string role, firstName, secondName, address1, address2, address3, phoneNumber, accountType;
             Person p = null;
 
             Console.WriteLine("Fill out this form to register:\n");
@@ -64,7 +67,7 @@ namespace SSD.Pages
 
                 Console.Write("Enter your branch location: ");
                 admin.BranchLocation = Console.ReadLine();
-                 
+
                 try
                 {
                     p = BankAdmin.InsertNewObject<BankAdmin>(admin);
@@ -129,7 +132,57 @@ namespace SSD.Pages
 
                 if (key.Key == ConsoleKey.Enter)
                 {
-                    break;
+                    string pass = Helpers.ConvertFromSecureToNormalString(password);
+                    List<char> specialCharacters = new List<char>()
+                            {
+                                '!',
+                                '@',
+                                '#',
+                                '$',
+                                '%',
+                                '^',
+                                '&',
+                                '*',
+                                '(',
+                                ')',
+                                '_',
+                                '-',
+                                '+',
+                                '='
+                            };
+                    if (pass.Any(char.IsLower) && //Lower case 
+                         pass.Any(char.IsUpper) &&
+                         pass.Any(char.IsDigit) &&
+                         pass.Any(specialCharacters.Contains))
+                    {
+                        pass = "";
+                        GC.Collect();
+                        break;
+                    }
+                    else
+                    {
+                        for (int i = password.Length - 1; i <= 0; i--)
+                        {
+                            password.RemoveAt(password.Length - 1);
+                            Console.Write("\b");
+                            Console.Write(' ');
+                            Console.Write("\b");
+                        }
+
+                        Console.WriteLine();
+                        Console.WriteLine("Password is too weak! Try again! (Hint: The requirement is:");
+                        Console.WriteLine("- Minimum 8 Characters");
+                        Console.WriteLine("- One Capital Letter");
+                        Console.WriteLine("- One Lowecase Letter");
+                        Console.WriteLine("- One Number");
+                        Console.WriteLine("- One Symbol");
+                        Console.WriteLine();
+
+                        Console.ReadKey();
+
+                        ConsoleExtensions.ClearLines(8);
+                        Console.Write("Password: ");
+                    }
                 }
                 else if (key.Key == ConsoleKey.Backspace)
                 {
@@ -146,11 +199,12 @@ namespace SSD.Pages
                     password.AppendChar(key.KeyChar);
                     Console.Write('*');
                 }
-
             }
             Console.WriteLine();
 
-            return AppController.GetInstance().LoginController.Register(email, password, p);
+            bool result = AppController.GetInstance().LoginController.Register(email, password, p);
+            password.Dispose();
+            return result;
         }
     }
 }

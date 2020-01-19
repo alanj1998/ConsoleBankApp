@@ -6,6 +6,7 @@ using System.Security;
 using System.Security.Cryptography;
 using System.Text;
 using SSD.Lib;
+using SSD.Models;
 
 namespace SSD.Controllers
 {
@@ -19,13 +20,14 @@ namespace SSD.Controllers
         internal LoggerController(SQL sql) : base(sql)
         {
             iv = Encoding.UTF8.GetBytes(
-                "Z/ea5[ro{i[%hCM&AgJq+5bqU1UJ#)!)9V*KcOqz6K{6vqZ?UF0G0O^JdVavlWlixoE#M+v.,Mw0$bja0UtGa3Ul$5)k1]8YF7@I#efDPN~QT09anJ8@T7:zsLNwU-z8$ek>7:FKtCM*Gy39wOU6cD]m^V.^8PZUon#Z-$2Xn2$,EY98z-89&w6,`5doW#N,Q.!ayqFruN/_EAugIqw]Bjl+,G$-T*6Oop[]J-_Pr@moyR8No_xTc+AvyC40sFgQ");
+                "Z/ea5[ro{i[%hCM&");
             key = Encoding.UTF8.GetBytes(
-                "lZi&&D~gcy`a.M@m.Dtvc<s^A?1nR[i}e7)`AsIj,C&rn,Qbl`>r*[x59,.93Om_Z*#{!qGi}%+){H^L6($zo`{Ckn-n.A#iCEE@b*bH,wihKhwsbcYDirZN1Sinj>-!rvE.`iSv]fd?_XTP^W^TFPW7G6UCWFH}u,bAi:rubNf<Y$H{l@X+$N.6T:@UrSsIyN%Rs(TYNo4nH`H,#N,bd:F+uFLy0V]P%NfOXQgvY].ShHY^yz2Dz}L?&<fOqm_f");
+                "lZi&&D~gcy`a.M@m.Dtvc<s^A?1nR[i}");
             logfilePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".consoleBankAppSSD");
 
             if (Log == null)
             {
+                Log = new List<SecureString>();
                 GetLogs();
             }
         }
@@ -38,8 +40,13 @@ namespace SSD.Controllers
                 s.AppendChar(c);
             }
             
-            Log.Add(s);
+            Log.Insert(0, s);
             AppendLog(logEntry);
+        }
+
+        internal static int GetCountOfLogs()
+        {
+            return Log.Count;
         }
 
         internal static List<SecureString> Get5LinesOfLog(int offset = 0)
@@ -101,15 +108,16 @@ namespace SSD.Controllers
                     using (CryptoStream cs = new CryptoStream(file, encryptor, CryptoStreamMode.Write))
                     using (StreamWriter sw = new StreamWriter(cs))
                     {
+
+                        // Write log entry to stream backwards so newest is on top
+                        sw.Write(logEntry);
+
                         // Rewrite the last block, if present. We even skip
                         // the case of block present but empty
                         if (previousLength != 0)
                         {
                             cs.Write(previousBytes, 0, previousLength);
                         }
-
-                        // Write all data to the stream.
-                        sw.Write(logEntry);
                     }
                 }
             }
@@ -124,44 +132,55 @@ namespace SSD.Controllers
                 algo.Mode = CipherMode.CBC;
                 algo.Padding = PaddingMode.PKCS7;
 
-                // Create the streams used for decryption.
-                using (FileStream file = new FileStream(logfilePath, FileMode.Open, FileAccess.Read))
+                try
                 {
-                    using (ICryptoTransform decryptor = algo.CreateDecryptor())
+                    // Create the streams used for decryption.
+                    using (FileStream file = new FileStream(logfilePath, FileMode.Open, FileAccess.Read))
                     {
-                        using (CryptoStream cs = new CryptoStream(file, decryptor, CryptoStreamMode.Read))
+                        using (ICryptoTransform decryptor = algo.CreateDecryptor())
                         {
-                            byte[] buffer = new byte[1048576];
-
-                            try
+                            using (CryptoStream cs = new CryptoStream(file, decryptor, CryptoStreamMode.Read))
                             {
-                                int read;
-                                while ((read = cs.Read(buffer, 0, buffer.Length)) > 0)
+                                byte[] buffer = new byte[1048576];
+
+                                try
                                 {
-                                    SecureString s = new SecureString();
-                                    foreach (char c in Encoding.UTF8.GetChars(buffer))
+                                    int read;
+                                    while ((read = cs.Read(buffer, 0, buffer.Length)) > 0)
                                     {
-                                        if (c == '\n')
+                                        SecureString s = new SecureString();
+                                        foreach (char c in Encoding.UTF8.GetChars(buffer))
                                         {
-                                            Log.Add(s);
-                                            s = new SecureString();
-                                        }
-                                        else
-                                        {
-                                            s.AppendChar(c);
+                                            if (c == '\n')
+                                            {
+                                                Log.Add(s);
+                                                s = new SecureString();
+                                            }
+                                            else if(c == '\0')
+                                            {
+                                                continue;
+                                            }
+                                            else
+                                            {
+                                                s.AppendChar(c);
+                                            }
                                         }
                                     }
                                 }
-                            }
-                            catch (CryptographicException e)
-                            {
-                                Console.WriteLine("A Cryptographic error occurred: {0}", e.Message);
-                            }
+                                catch (CryptographicException e)
+                                {
+                                    Console.WriteLine("A Cryptographic error occurred: {0}", e.Message);
+                                }
 
-                            cs.Flush();
-                            file.Flush();
+                                cs.Flush();
+                                file.Flush();
+                            }
                         }
                     }
+                } 
+                catch(IOException)
+                {
+                    Log = new List<SecureString>();
                 }
             }
         }

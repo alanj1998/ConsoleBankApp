@@ -1,7 +1,6 @@
 using System;
 using System.Security;
 using SSD.Controllers;
-using SSD.Lib;
 using SSD.Models;
 
 namespace SSD.Pages
@@ -15,15 +14,16 @@ namespace SSD.Pages
             try
             {
                 Person answer = AppController.GetInstance().LoginController.Login(username, password);
+                password.Dispose();
                 if (answer == null)
                 {
                     Console.WriteLine("Wrong Email or Password");
 
                     p = null;
                     return false;
-                } 
+                }
                 else
-                { 
+                {
                     p = answer;
                     return true;
                 }
@@ -89,12 +89,13 @@ namespace SSD.Pages
                             password.AppendChar(key.KeyChar);
                             Console.Write('*');
                         }
-                        
+
                         if (firstOne) firstOne = false;
                     }
                     Console.WriteLine();
 
                     isLoggedIn = this.DoLogin(username, password, out p);
+                    password.Dispose();
 
                     if (!isLoggedIn)
                     {
