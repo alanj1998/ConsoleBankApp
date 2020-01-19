@@ -30,6 +30,8 @@ namespace SSD.Pages
             Transactions[] transactions = GetTransactions(u.Id);
 
             Console.WriteLine($"Transactions for {u.FirstName} {u.LastName}");
+            Helpers.FreeAndNil(ref u);
+
             TableHelpers.RenderTable(transactions);
 
             do
@@ -56,15 +58,19 @@ namespace SSD.Pages
                     ConsoleExtensions.ClearLines(transactions.Length + 1);
                 }
             } while (!isRightAnswer);
+            Helpers.FreeAndNil(ref transactions);
 
             if (chosenTransaction.ReceiverAccountId != this.user.Id && chosenTransaction.SenderAccountId != this.user.Id)
             {
+                Helpers.FreeAndNil(ref chosenTransaction);
                 Console.WriteLine("You attempted to delete a transaction that does not belong to you! Quitting the app...");
                 Environment.Exit(1);
             }
             else
             {
                 AppController.GetInstance().TransactionController.DeleteTransaction(chosenTransaction.Id);
+                Helpers.FreeAndNil(ref chosenTransaction);
+
                 Console.WriteLine("Press any key to continue...");
                 Console.ReadKey();
                 this._router.Navigate(Routes.Dashboard, this.user);
@@ -73,7 +79,9 @@ namespace SSD.Pages
 
         private Transactions[] GetTransactions(string userId)
         {
-            return AppController.GetInstance().TransactionController.GetTransactionsForUser(userId);
+            Transactions[] t = AppController.GetInstance().TransactionController.GetTransactionsForUser(userId);
+
+            return t;
         }
 
         private BankUser SearchForUsers(string name = "")
@@ -163,6 +171,9 @@ namespace SSD.Pages
                             ConsoleExtensions.ClearLines(users.Length + 4);
                         }
                     } while (!rightAnswer);
+
+                    Helpers.FreeAndNil(ref user);
+                    Helpers.FreeAndNil(ref users);
                 }
             } while (!foundPerson);
 

@@ -88,6 +88,8 @@ namespace SSD.Pages
             } while (!isRightAnswer);
 
             UpdateChosenTransaction(chosenTransaction);
+            Helpers.FreeAndNil(ref chosenTransaction);
+            Helpers.FreeAndNil(ref transactions);
             Console.WriteLine("Press any key to continue...");
             Console.ReadKey();
         
@@ -169,6 +171,8 @@ namespace SSD.Pages
             } while (!rightAnswer);
 
             AppController.GetInstance().TransactionController.UpdateTransaction(t);
+
+            Helpers.FreeAndNil(ref t);
         }
 
         private Transactions[] GetTransactions(string userId)
@@ -269,6 +273,8 @@ namespace SSD.Pages
                         else if (nameInput.ToLower() == "n")
                         {
                             rightAnswer = true;
+
+                            Helpers.FreeAndNil(ref users);
                             _router.Navigate(Routes.Dashboard, this.user);
                         }
                         else
@@ -316,6 +322,8 @@ namespace SSD.Pages
                 }
             } while (!foundPerson);
 
+            Helpers.FreeAndNil(ref users);
+            Helpers.FreeAndNil(ref user);
             return chosenBankUser;
         }
 

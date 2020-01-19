@@ -71,6 +71,7 @@ namespace SSD.Pages
                 try
                 {
                     p = BankAdmin.InsertNewObject<BankAdmin>(admin);
+                    Helpers.FreeAndNil(ref admin);
                 }
                 catch (System.Exception err)
                 {
@@ -98,6 +99,7 @@ namespace SSD.Pages
                 try
                 {
                     p = BankUser.InsertNewObject<BankUser>(user);
+                    Helpers.FreeAndNil(ref user);
                 }
                 catch (System.Exception err)
                 {
@@ -155,8 +157,7 @@ namespace SSD.Pages
                          pass.Any(char.IsDigit) &&
                          pass.Any(specialCharacters.Contains))
                     {
-                        pass = "";
-                        GC.Collect();
+                        Helpers.FreeAndNil(ref pass);
                         break;
                     }
                     else
@@ -203,6 +204,9 @@ namespace SSD.Pages
             Console.WriteLine();
 
             bool result = AppController.GetInstance().LoginController.Register(email, password, p);
+
+            Helpers.FreeAndNil(ref p);
+            Helpers.FreeAndNil(ref email);
             password.Dispose();
             return result;
         }

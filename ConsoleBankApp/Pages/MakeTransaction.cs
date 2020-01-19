@@ -69,7 +69,11 @@ namespace SSD.Pages
                 Console.WriteLine("Search for a person to transfer funds from: ");
                 sender = SearchForUsers();
 
-                if (sender.GetType() == typeof(BankUser))
+                if(sender == null)
+                {
+                    return;
+                }
+                else if (sender.GetType() == typeof(BankUser))
                 {
                     transaction.SenderAccountId = sender.Id;
                 }
@@ -112,6 +116,8 @@ namespace SSD.Pages
                 }
                 else adminUserCheck = true;
             } while (!adminUserCheck);
+            Helpers.FreeAndNil(ref receiver);
+            Helpers.FreeAndNil(ref sender);
 
             Currency c = GetCurrency();
             transaction.SmallCurrencyString = c.CurrencyShortName;
@@ -125,6 +131,8 @@ namespace SSD.Pages
             Console.WriteLine("Your new transaction has been inserted!");
             Console.WriteLine("You can view it on the dashboard.");
             Console.ReadKey();
+
+            Helpers.FreeAndNil(ref transaction);
             _router.Navigate(Routes.Dashboard, this._user);
         }
 

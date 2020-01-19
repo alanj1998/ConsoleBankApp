@@ -30,6 +30,8 @@ namespace SSD.Pages
                 {
                     Console.WriteLine("No transactions for this account.");
                 }
+
+                Helpers.FreeAndNil(ref t);
             }
             else if (user.Role == Roles.Admin)
             {
@@ -113,7 +115,7 @@ namespace SSD.Pages
                 Transactions[] t = AppController.GetInstance().TransactionController.GetTransactionsForUser(chosenUser.Id);
                 Array.Sort(t, delegate (Transactions x, Transactions y) { return y.Timestamp.CompareTo(x.Timestamp); });
 
-                Console.WriteLine($"Transactions for {user.FirstName} {user.LastName}");
+                Console.WriteLine($"Transactions for {chosenUser.FirstName} {chosenUser.LastName}");
                 if (t.Length > 0)
                 {
                     TableHelpers.RenderTable(t);
@@ -122,7 +124,12 @@ namespace SSD.Pages
                 {
                     Console.WriteLine("No transactions for this account.");
                 }
+
+                Helpers.FreeAndNil(ref t);
+                Helpers.FreeAndNil(ref chosenUser);
+                Helpers.FreeAndNil(ref users);
             }
+
             Console.WriteLine("Press any key to continue...");
             Console.ReadKey();
             this._router.Navigate(Routes.Dashboard, this.user);

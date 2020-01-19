@@ -1,6 +1,7 @@
 using System;
 using System.Security;
 using SSD.Controllers;
+using SSD.Lib;
 using SSD.Models;
 
 namespace SSD.Pages
@@ -19,6 +20,7 @@ namespace SSD.Pages
                 {
                     Console.WriteLine("Wrong Email or Password");
 
+                    Helpers.FreeAndNil(ref answer);
                     p = null;
                     return false;
                 }

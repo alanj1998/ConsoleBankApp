@@ -66,6 +66,8 @@ namespace SSD.Pages
                         l.AddEndTime(DateTime.Now);
                         LoggerController.AddToLog(l.ToString());
                         LogEntry.SetActor("User", Roles.Unauthenticated);
+                        Helpers.FreeAndNil(ref l);
+
                         goodResponse = true;
                         break;
                     case 1:

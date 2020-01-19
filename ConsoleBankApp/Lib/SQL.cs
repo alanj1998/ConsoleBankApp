@@ -60,8 +60,9 @@ namespace SSD.Lib
             whereQuery = $"SELECT * FROM {this._GetTableStringFromModel(typeof(T).Name)} WHERE {whereQuery}";
             using (MySqlCommand command = new MySqlCommand(whereQuery, this._connection))
             {
-                whereQuery = ""; // getting rid of the query as soon as it's called
                 MySqlDataReader reader = command.ExecuteReader();
+                //whereQuery = ""; // getting rid of the query as soon as it's called
+
 
                 PropertyInfo[] p = typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
 
@@ -85,7 +86,7 @@ namespace SSD.Lib
 
                                 Type type = this.GetType();
 
-                                //string no_sql = "SELECT * FROM " + this._GetTableStringFromModel(prop.PropertyType.Name) + " WHERE Id = \"" + value + "\";";
+                                string sql = "SELECT * FROM " + this._GetTableStringFromModel(prop.PropertyType.Name) + " WHERE Id = \"" + value + "\";";
                                 object res = type.GetMethod("Select", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).MakeGenericMethod(prop.PropertyType).Invoke(this, new object[] { "Id = \"" + value + "\";" });
 
                                 if (prop.PropertyType.IsArray)

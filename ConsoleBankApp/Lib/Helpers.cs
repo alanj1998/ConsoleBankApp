@@ -28,5 +28,10 @@ namespace SSD.Lib
             }
         }
 
+        internal static void FreeAndNil<T>(ref T o)
+        {
+            o = default;
+            GC.Collect();
+        }
     }
 }

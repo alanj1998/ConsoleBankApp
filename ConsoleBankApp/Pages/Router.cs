@@ -1,4 +1,5 @@
 using System;
+using SSD.Lib;
 using SSD.Models;
 
 namespace SSD.Pages
@@ -99,6 +100,8 @@ namespace SSD.Pages
                     route = error;
                     break;
             }
+            Helpers.FreeAndNil(ref model);
+
             Console.Clear();
             route.Render();
         }
