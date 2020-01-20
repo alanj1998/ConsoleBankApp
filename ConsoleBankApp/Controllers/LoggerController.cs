@@ -74,7 +74,6 @@ namespace SSD.Controllers
 
                         if (fileLength >= iv.Length * 2)
                         {
-                            // At least 2 blocks, take the second last block
                             file.Position = fileLength - iv.Length * 2;
                             file.Read(block, 0, block.Length);
                             algo.IV = block;
@@ -86,7 +85,6 @@ namespace SSD.Controllers
                             algo.IV = iv;
                         }
 
-                        // Read the last block
                         file.Read(block, 0, block.Length);
                         file.Position = fileLength - iv.Length;
                         
@@ -100,7 +98,6 @@ namespace SSD.Controllers
                     }
                     else
                     {
-                        // Use the IV given
                         algo.IV = iv;
                     }
                     
@@ -109,11 +106,8 @@ namespace SSD.Controllers
                     using (StreamWriter sw = new StreamWriter(cs))
                     {
 
-                        // Write log entry to stream backwards so newest is on top
                         sw.Write(logEntry);
 
-                        // Rewrite the last block, if present. We even skip
-                        // the case of block present but empty
                         if (previousLength != 0)
                         {
                             cs.Write(previousBytes, 0, previousLength);
@@ -134,7 +128,6 @@ namespace SSD.Controllers
 
                 try
                 {
-                    // Create the streams used for decryption.
                     using (FileStream file = new FileStream(logfilePath, FileMode.Open, FileAccess.Read))
                     {
                         using (ICryptoTransform decryptor = algo.CreateDecryptor())

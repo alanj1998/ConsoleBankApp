@@ -2,13 +2,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
   
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <UserSecretsId>aac238c5-efc3-4060-947f-208806e8404a</UserSecretsId>
-    <SignAssembly>true</SignAssembly>
     <ApplicationIcon>cryptocurrency.ico</ApplicationIcon>
     <AssemblyOriginatorKeyFile>ConsoleBankAppKey.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
